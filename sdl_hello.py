@@ -79,10 +79,17 @@ def load_media():
     return success
 
 def load_surface(path):
+    global screen_surface
+    optimized_surface = None
     loaded_surface = SDL_LoadBMP(path)
     if loaded_surface is None:
         print('Unable to load image %s. SDL Error: %s' %(path, SDL_GetError()))
-    return loaded_surface
+    else:
+        optimized_surface = SDL_ConvertSurface(loaded_surface, screen_surface.contents.format,0)
+        if optimized_surface is None:
+            print('Unable to optimize image %s. SDL Error: %s' % (path, SDL_GetError()))
+        SDL_FreeSurface(loaded_surface)
+    return optimized_surface
 
 def close():
     global key_surfaces
@@ -122,8 +129,13 @@ def main():
                             current_surface = key_surfaces[key_press_surfaces.KEY_PRESS_SURFACE_RIGHT]
                         else:
                             current_surface = key_surfaces[key_press_surfaces.KEY_PRESS_SURFACE_DEFAULT]
-                        
-                SDL_BlitSurface(current_surface, None, screen_surface, None)
+                
+                stretched_rect = SDL_Rect()
+                stretched_rect.x = 0
+                stretched_rect.y = 0
+                stretched_rect.w = SCREEN_WIDTH
+                stretched_rect.h = SCREEN_HEIGHT 
+                SDL_BlitScaled(current_surface, None, screen_surface, ctypes.byref(stretched_rect))
                 SDL_UpdateWindowSurface(window)
     close()
 
