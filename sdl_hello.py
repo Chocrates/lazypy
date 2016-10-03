@@ -57,13 +57,6 @@ def load_texture(path):
 
 def load_media():
     success = True
-    global texture
-
-    texture = load_texture(b'texture.png')
-    if not texture:
-        print('Failed to load texture image')
-        success = False
-
     return success
 
 def close():
@@ -95,11 +88,19 @@ def main():
                 while SDL_PollEvent(ctypes.byref(event)) != 0:
                     if event.type == SDL_QUIT:
                         quit = True
+        
+                    SDL_SetRenderDrawColor(renderer, 0xFF,0xFF,0xFF,0xFF)
+                    SDL_RenderClear(renderer)
+                    fill_rect = SDL_Rect( int(SCREEN_WIDTH/4), int(SCREEN_HEIGHT/4), int(SCREEN_WIDTH/2), int(SCREEN_HEIGHT/2))
+                    print(fill_rect)
+                    SDL_SetRenderDrawColor(renderer, 0xFF,0x00,0x00,0xFF)
+                    SDL_RenderFillRect(renderer, ctypes.byref(fill_rect))
 
+                    outline_rect = SDL_Rect( int(SCREEN_WIDTH/6), int(SCREEN_HEIGHT/6), int(SCREEN_WIDTH * 2/3), int(SCREEN_HEIGHT * 2/3))
+                    SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF)
+                    SDL_RenderDrawRect(renderer, ctypes.byref(outline_rect))
+                    
 
-                SDL_RenderClear(renderer)
-                SDL_RenderCopy(renderer,texture,None,None)
-                SDL_RenderPresent(renderer)
     close()
 
 
