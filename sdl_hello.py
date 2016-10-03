@@ -2,6 +2,7 @@ import sys
 from enum import Enum
 import ctypes
 from sdl2 import *
+from sdl2.sdlimage import *
 
 
 SCREEN_WIDTH = 640
@@ -43,7 +44,11 @@ def init():
             print('Window could not be created. SDL_Error: %s' % SDL_GetError())
             success = False
         else:
-            screen_surface = SDL_GetWindowSurface(window)
+            img_flags = IMG_INIT_PNG
+            if not (IMG_Init(img_flags) & img_flags):
+                print('SDL image could not initialize. SDL_image error: %s' % IMG_GetError())
+            else:
+                screen_surface = SDL_GetWindowSurface(window)
 
     return success
 
@@ -51,7 +56,7 @@ def load_media():
     success = True
     global key_surfaces
 
-    key_surfaces[key_press_surfaces.KEY_PRESS_SURFACE_DEFAULT] = load_surface(b'press.bmp')
+    key_surfaces[key_press_surfaces.KEY_PRESS_SURFACE_DEFAULT] = load_surface(b'hello.png')
     if key_surfaces[key_press_surfaces.KEY_PRESS_SURFACE_DEFAULT] is None:
         print('Unable to load default image %s.  SDL_Error: %s' % ('press.bmp',SDL_GetError()))
         success = False
@@ -81,7 +86,7 @@ def load_media():
 def load_surface(path):
     global screen_surface
     optimized_surface = None
-    loaded_surface = SDL_LoadBMP(path)
+    loaded_surface = IMG_Load(path)
     if loaded_surface is None:
         print('Unable to load image %s. SDL Error: %s' %(path, SDL_GetError()))
     else:
