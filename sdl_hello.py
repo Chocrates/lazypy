@@ -56,7 +56,11 @@ def load_texture(path):
     return new_texture
 
 def load_media():
+    global texture
     success = True
+    texture = load_texture(b'texture.png')
+    if texture is None:
+        print('Error! %s %s' % ('texture.png',SDL_GetError()))
     return success
 
 def close():
@@ -88,27 +92,25 @@ def main():
                 while SDL_PollEvent(ctypes.byref(event)) != 0:
                     if event.type == SDL_QUIT:
                         quit = True
-        
-                    SDL_SetRenderDrawColor(renderer, 0xFF,0xFF,0xFF,0xFF)
-                    SDL_RenderClear(renderer)
-                    fill_rect = SDL_Rect( int(SCREEN_WIDTH/4), int(SCREEN_HEIGHT/4), int(SCREEN_WIDTH/2), int(SCREEN_HEIGHT/2))
-                    print(fill_rect)
-                    SDL_SetRenderDrawColor(renderer, 0xFF,0x00,0x00,0xFF)
-                    SDL_RenderFillRect(renderer, ctypes.byref(fill_rect))
+                 
+                top_left_vp = SDL_Rect(0,0,int(SCREEN_WIDTH/2), int(SCREEN_HEIGHT/2))
+                SDL_RenderSetViewport(renderer,ctypes.byref(top_left_vp))
+                SDL_RenderCopy(renderer, texture,None,None)
+                
+                top_right_vp = SDL_Rect(int(SCREEN_WIDTH/2),0,int(SCREEN_WIDTH/2),int(SCREEN_HEIGHT/2))
+                SDL_RenderSetViewport(renderer,ctypes.byref(top_right_vp))
+                SDL_RenderCopy(renderer, texture,None,None)
 
-                    outline_rect = SDL_Rect( int(SCREEN_WIDTH/6), int(SCREEN_HEIGHT/6), int(SCREEN_WIDTH * 2/3), int(SCREEN_HEIGHT * 2/3))
-                    SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF)
-                    SDL_RenderDrawRect(renderer, ctypes.byref(outline_rect))
-                    
-                    SDL_SetRenderDrawColor(renderer, 0x00,0x00,0xFF,0xFF)
-                    SDL_RenderDrawLine(renderer,0,int(SCREEN_HEIGHT/2), SCREEN_WIDTH, int(SCREEN_HEIGHT/2))
-                    
-                    SDL_SetRenderDrawColor(renderer, 0xFF,0xFF,0x00,0xFF)
-                    for i in range(0,SCREEN_HEIGHT):
-                        SDL_RenderDrawPoint(renderer, int(SCREEN_WIDTH/2),i)
-                    
-                    SDL_RenderPresent(renderer)
+                bottom_vp = SDL_Rect(0,int(SCREEN_HEIGHT/2),SCREEN_WIDTH,int(SCREEN_HEIGHT/2))
+                SDL_RenderSetViewport(renderer,ctypes.byref(bottom_vp))
+                SDL_RenderCopy(renderer, texture,None,None)
 
+                SDL_RenderPresent(renderer)
+                
+            
+                 
+                
+                
     close()
 
 
