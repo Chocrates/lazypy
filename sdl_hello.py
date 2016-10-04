@@ -100,6 +100,14 @@ def main():
                     SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF)
                     SDL_RenderDrawRect(renderer, ctypes.byref(outline_rect))
                     
+                    SDL_SetRenderDrawColor(renderer, 0x00,0x00,0xFF,0xFF)
+                    SDL_RenderDrawLine(renderer,0,int(SCREEN_HEIGHT/2), SCREEN_WIDTH, int(SCREEN_HEIGHT/2))
+                    
+                    SDL_SetRenderDrawColor(renderer, 0xFF,0xFF,0x00,0xFF)
+                    for i in range(0,SCREEN_HEIGHT):
+                        SDL_RenderDrawPoint(renderer, int(SCREEN_WIDTH/2),i)
+                    
+                    SDL_RenderPresent(renderer)
 
     close()
 
